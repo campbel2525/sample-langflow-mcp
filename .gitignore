@@ -2,6 +2,7 @@
 .env.*
 !.env.mcp.example
 !.env.langflow.example
+!.env.opensearch-script.example
 *.pyc
 __pycache__
 .python-version

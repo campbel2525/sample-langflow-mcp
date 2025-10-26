@@ -1,10 +1,11 @@
-pn = '009_langflow'
+pn = 'sample-langflow-mcp'
 
 init: ## 開発作成
 	docker compose -p $(pn) build --no-cache
 	docker compose -p $(pn) down --volumes
 	docker compose -p $(pn) up -d
-	make install
+	docker compose -p $(pn) exec -it mcp pipenv install --dev
+	docker compose -p $(pn) exec -it opensearch-script pipenv install --dev
 
 up: ## 開発立ち上げ
 	docker compose -p $(pn) up -d
@@ -19,6 +20,10 @@ restart: ## 開発再起動
 mcp-shell: ## dockerのshellに入る
 	docker compose -p $(pn) exec mcp bash
 
+opensearch-script-shell: ## dockerのshellに入る
+	docker compose -p $(pn) exec opensearch-script bash
+
+
 langflow-shell: ## dockerのshellに入る
 	docker compose -p $(pn) exec langflow bash
 
@@ -27,10 +32,6 @@ check: ## コードのフォーマット
 	docker compose -p $(pn) exec -it mcp pipenv run black .
 	docker compose -p $(pn) exec -it mcp pipenv run flake8 .
 	docker compose -p $(pn) exec -it mcp pipenv run mypy .
-
-install:
-	docker compose -p $(pn) exec -it mcp pipenv install --dev
-
 
 destroy: ## 環境削除
 	make down

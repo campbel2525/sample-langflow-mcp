@@ -2,14 +2,27 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "python",
+      "name": "mcp",
       "type": "python",
       "request": "attach",
-      "port": 9003,
+      "port": 9001,
       "host": "localhost",
       "pathMappings": [
         {
-          "localRoot": "${workspaceFolder}/project",
+          "localRoot": "${workspaceFolder}/projects/mcp",
+          "remoteRoot": "/project"
+        }
+      ]
+    },
+    {
+      "name": "opensearch-script",
+      "type": "python",
+      "request": "attach",
+      "port": 9002,
+      "host": "localhost",
+      "pathMappings": [
+        {
+          "localRoot": "${workspaceFolder}/projects/opensearch-script",
           "remoteRoot": "/project"
         }
       ]

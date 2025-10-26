@@ -36,3 +36,34 @@ make restart
 ## 2. 環境変数について
 
 `env/.env.langflow`でセットした OpenAI の API キーは UI 上の`Settings -> Global Variables -> OPENAI_API_KEY`の value には反映されていないですが、しっかりシステム上は反映されています
+
+# Tips
+
+### 1.Langflow x OpenSearch
+
+Langflow の OpenSearch ノードは
+
+- ベクトルは vector_field フィールド
+- テキストは text フィールド
+
+を必要とする
+
+他のフィールド名に設定することはできなさそうなので OpenSearch には
+
+- ベクトル用の vector_field フィールド
+- 文字列用の text フィールド
+
+を用意する必要がある
+
+以下の用途にはどう対応するか不明
+
+- 複数の異なるフィールドを検索したい場合
+- メタデータで検索したい場合
+- ハイブリッド検索ができない
+  - Hybrid Search Query を設定すると思うんだがうまくいかない -> mcp でやったほうがいいかも
+
+# 運用方法
+
+- 作成したワークフローを Git 管理するベストプラクティスがよくわかっていない
+  - `/app/flows`に出力した json を設置すると docker の再起動のたびに json が読み込まれて初期されてしまう
+  - 別途フォルダに json を管理して適宜`/app/flows`とマウントするほうがいいかもしれない

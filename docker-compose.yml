@@ -8,7 +8,7 @@ services:
       context: ./
       dockerfile: docker/Dockerfile.mcp
     ports:
-      - "127.0.0.1:9003:9003" # デバッグ用
+      - "127.0.0.1:9001:9001" # デバッグ用
       - "127.0.0.1:8000:8000"
     volumes:
       - ./projects/mcp:/project
@@ -37,7 +37,7 @@ services:
       LANGFLOW_LOAD_FLOWS_PATH: "/app/flows"
       LANGFLOW_DATABASE_URL: postgresql://langflow:secret@postgres:5432/langflow
     volumes:
-      - langflow-data:/app/langflow
+      - langflow_data:/app/langflow
       - ./projects/langflow/imports:/app/flows:ro
 
   postgres:
@@ -47,7 +47,7 @@ services:
       POSTGRES_PASSWORD: secret
       POSTGRES_DB: langflow
     volumes:
-      - langflow-postgres:/var/lib/postgresql/data
+      - langflow_postgres:/var/lib/postgresql/data
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U langflow -d langflow"]
       interval: 5s
@@ -55,6 +55,73 @@ services:
       retries: 10
     restart: unless-stopped
 
+  # ----------------
+  # OpenSearch
+  # ----------------
+  opensearch:
+    # image: opensearchproject/opensearch:3.2.0
+    build:
+      context: ./
+      dockerfile: ./docker/Dockerfile.opensearch
+    environment:
+      - discovery.type=single-node
+      - bootstrap.memory_lock=true
+      - OPENSEARCH_JAVA_OPTS=-Xms2g -Xmx2g
+      - DISABLE_SECURITY_PLUGIN=true # セキュリティ完全OFF（学習・開発用途）
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - opensearch_data:/usr/share/opensearch/data
+    ports:
+      - "9200:9200" # ← HTTP（セキュリティ無効なので https ではなく http）
+      - "9600:9600"
+    healthcheck:
+      # 認証なしで HTTP にアクセスする
+      test: ["CMD-SHELL", "curl -sf http://localhost:9200 >/dev/null"]
+      interval: 15s
+      timeout: 5s
+      retries: 20
+  opensearch-dashboards:
+    image: opensearchproject/opensearch-dashboards:2.18.0
+    depends_on:
+      opensearch:
+        condition: service_healthy
+    environment:
+      # セキュリティOFFなので http でOK（https/認証は不要）
+      - OPENSEARCH_HOSTS=["http://opensearch:9200"]
+      - DISABLE_SECURITY_DASHBOARDS_PLUGIN=true
+      - SERVER_SSL_ENABLED=false
+    ports:
+      - "5601:5601"
+    healthcheck:
+      # 起動直後は 503 のことがあるので "available" or "Proceeding..." を拾う
+      test:
+        [
+          "CMD-SHELL",
+          "curl -sf http://localhost:5601/api/status | grep -q 'available\\|Proceeding with configuration'",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 60
+  opensearch-script:
+    restart: "no"
+    tty: true
+    build:
+      context: ./
+      dockerfile: docker/Dockerfile.opensearch-script
+    ports:
+      - "127.0.0.1:9002:9002" # デバッグ用
+    volumes:
+      - ./projects/opensearch_script:/project
+    env_file:
+      - ./env/.env.opensearch-script
+    environment:
+      LANG: C.UTF-8
+      LC_ALL: C.UTF-8
+
 volumes:
-  langflow-data:
-  langflow-postgres:
+  langflow_data:
+  langflow_postgres:
+  opensearch_data:
