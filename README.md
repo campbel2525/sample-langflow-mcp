@@ -67,3 +67,11 @@ Langflow の OpenSearch ノードは
 - 作成したワークフローを Git 管理するベストプラクティスがよくわかっていない
   - `/app/flows`に出力した json を設置すると docker の再起動のたびに json が読み込まれて初期されてしまう
   - 別途フォルダに json を管理して適宜`/app/flows`とマウントするほうがいいかもしれない
+
+https://gofastmcp.com/getting-started/welcome
+
+# 開発の方法
+
+- `make mcp-run`で開発用の mcp サーバーの起動
+- postman で直接叩いて機能の確認
+  - https://qiita.com/nagix/items/712672a7bc741eef03aa

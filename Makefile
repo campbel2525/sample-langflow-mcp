@@ -45,4 +45,5 @@ push:
 	git push origin head
 
 mcp-run:
-	docker compose -p $(pn) exec -it mcp pipenv run fastmcp run main.py:mcp --transport http --port 8000
+# 	docker compose -p $(pn) exec -it mcp pipenv run fastmcp run main.py:mcp --transport http --port 8000
+	docker compose -p $(pn) exec -it mcp pipenv run fastmcp run main.py:mcp
