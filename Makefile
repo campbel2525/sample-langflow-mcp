@@ -5,7 +5,7 @@ init: ## 開発作成
 	docker compose -p $(pn) down --volumes
 	docker compose -p $(pn) up -d
 	docker compose -p $(pn) exec -it mcp pipenv install --dev
-	docker compose -p $(pn) exec -it opensearch-script pipenv install --dev
+# 	docker compose -p $(pn) exec -it opensearch-script pipenv install --dev
 
 up: ## 開発立ち上げ
 	docker compose -p $(pn) up -d

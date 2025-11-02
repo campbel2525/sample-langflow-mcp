@@ -12,6 +12,7 @@ services:
       - "127.0.0.1:8000:8000"
     volumes:
       - ./projects/mcp:/project
+      - ./data:/project/data
     env_file:
       - ./env/.env.mcp
     environment:
@@ -105,21 +106,21 @@ services:
       interval: 10s
       timeout: 5s
       retries: 60
-  opensearch-script:
-    restart: "no"
-    tty: true
-    build:
-      context: ./
-      dockerfile: docker/Dockerfile.opensearch-script
-    ports:
-      - "127.0.0.1:9002:9002" # デバッグ用
-    volumes:
-      - ./projects/opensearch_script:/project
-    env_file:
-      - ./env/.env.opensearch-script
-    environment:
-      LANG: C.UTF-8
-      LC_ALL: C.UTF-8
+  # opensearch-script:
+  #   restart: "no"
+  #   tty: true
+  #   build:
+  #     context: ./
+  #     dockerfile: docker/Dockerfile.opensearch-script
+  #   ports:
+  #     - "127.0.0.1:9002:9002" # デバッグ用
+  #   volumes:
+  #     - ./projects/opensearch_script:/project
+  #   env_file:
+  #     - ./env/.env.opensearch-script
+  #   environment:
+  #     LANG: C.UTF-8
+  #     LC_ALL: C.UTF-8
 
 volumes:
   langflow_data:

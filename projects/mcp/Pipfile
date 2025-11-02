@@ -5,6 +5,11 @@ name = "pypi"
 
 [packages]
 fastmcp = "*"
+opensearch-py = "*"
+pydantic-settings = "*"
+langchain = "*"
+langchain-openai = "*"
+langchain-text-splitters = "*"
 
 [dev-packages]
 flake8 = "*"
