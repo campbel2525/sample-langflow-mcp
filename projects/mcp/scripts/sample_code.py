@@ -19,7 +19,7 @@ def opensearch(
         openai_max_retries=settings.openai_max_retries,
         opensearch_base_url=settings.opensearch_base_url,
         opensearch_index_name=settings.opensearch_default_index_name,
-        question=question,
+        query=question,
         k=k,
         size=size,
     )
