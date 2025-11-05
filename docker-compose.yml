@@ -21,7 +21,7 @@ services:
 
   langflow:
     image: langflowai/langflow:1.6.4
-    restart: unless-stopped
+    restart: "no"
     # depends_on:
     #   postgres:
     #     condition: service_healthy
@@ -43,6 +43,7 @@ services:
 
   postgres:
     image: postgres:16
+    restart: "no"
     environment:
       POSTGRES_USER: langflow
       POSTGRES_PASSWORD: secret
@@ -54,7 +55,6 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
-    restart: unless-stopped
 
   # ----------------
   # OpenSearch
@@ -106,21 +106,6 @@ services:
       interval: 10s
       timeout: 5s
       retries: 60
-  # opensearch-script:
-  #   restart: "no"
-  #   tty: true
-  #   build:
-  #     context: ./
-  #     dockerfile: docker/Dockerfile.opensearch-script
-  #   ports:
-  #     - "127.0.0.1:9002:9002" # デバッグ用
-  #   volumes:
-  #     - ./projects/opensearch_script:/project
-  #   env_file:
-  #     - ./env/.env.opensearch-script
-  #   environment:
-  #     LANG: C.UTF-8
-  #     LC_ALL: C.UTF-8
 
 volumes:
   langflow_data:
